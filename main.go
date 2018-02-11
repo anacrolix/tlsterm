@@ -90,7 +90,10 @@ func listen(tun TunnelAddr, tc *tls.Config) error {
 		go func() {
 			defer c.Close()
 			oc, err := net.Dial("tcp", tun.Remote.String())
-			assert.Nil(err)
+			if err != nil {
+				log.Printf("#%v: error dialing %v: %v", connId, tun.Remote, err)
+				return
+			}
 			defer oc.Close()
 			log.Printf("#%v: dialed %v", connId, oc.RemoteAddr())
 			go func() {
