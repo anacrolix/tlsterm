@@ -40,7 +40,7 @@ func (me *TunnelAddr) Marshal(s string) error {
 	return nil
 }
 
-func (TunnelAddr) RequiresExplicitValue() bool { return true }
+func (*TunnelAddr) RequiresExplicitValue() bool { return true }
 
 func addClientCAs(cfg *tls.Config) {
 	b, err := ioutil.ReadFile("clientcas.pem")
