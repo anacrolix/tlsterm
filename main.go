@@ -11,7 +11,7 @@ import (
 	"strings"
 
 	"github.com/anacrolix/missinggo"
-	"github.com/anacrolix/missinggo/assert"
+	"github.com/anacrolix/missinggo/expect"
 	"github.com/anacrolix/tagflag"
 )
 
@@ -50,8 +50,8 @@ func (TunnelAddr) RequiresExplicitValue() bool { return true }
 
 func addClientCAs(cfg *tls.Config) {
 	b, err := ioutil.ReadFile("clientcas.pem")
-	assert.Nil(err)
-	assert.Ok(cfg.ClientCAs.AppendCertsFromPEM(b))
+	expect.Nil(err)
+	expect.Ok(cfg.ClientCAs.AppendCertsFromPEM(b))
 }
 
 func main() {
@@ -66,11 +66,11 @@ func main() {
 	}
 	var err error
 	tlsCfg.Certificates, err = missinggo.LoadCertificateDir("./certs")
-	assert.Nil(err)
+	expect.Nil(err)
 	addClientCAs(tlsCfg)
 	for _, t := range flags.Tunnels {
 		go func() {
-			assert.Nil(listen(t, tlsCfg))
+			expect.Nil(listen(t, tlsCfg))
 		}()
 	}
 	select {}
@@ -78,12 +78,12 @@ func main() {
 
 func listen(tun TunnelAddr, tc *tls.Config) error {
 	l, err := tls.Listen("tcp", tun.Local.String(), tc)
-	assert.Nil(err)
+	expect.Nil(err)
 	defer l.Close()
 	var nextConnId int
 	for {
 		c, err := l.Accept()
-		assert.Nil(err)
+		expect.Nil(err)
 		connId := nextConnId
 		nextConnId++
 		log.Printf("#%v: accepted connection from %v", connId, c.RemoteAddr())
