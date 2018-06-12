@@ -15,10 +15,6 @@ import (
 	"github.com/anacrolix/tagflag"
 )
 
-func init() {
-	log.SetFlags(log.Flags() | log.Lshortfile)
-}
-
 type TunnelAddr struct {
 	Local  *net.TCPAddr
 	Remote *net.TCPAddr
@@ -31,10 +27,8 @@ func (me *TunnelAddr) Marshal(s string) error {
 	if i < 0 {
 		return fmt.Errorf("bad tunnel: %q", s)
 	}
-	log.Print(i)
 	i += strings.IndexByte(s[i+1:], ':')
 	i++
-	log.Print(i)
 	err := tagflag.Unmarshal(s[:i], &me.Local)
 	if err != nil {
 		return fmt.Errorf("error unmarshalling local addr: %v", err)
@@ -55,6 +49,7 @@ func addClientCAs(cfg *tls.Config) {
 }
 
 func main() {
+	log.SetFlags(log.Flags() | log.Lshortfile)
 	var flags = struct {
 		tagflag.StartPos
 		Tunnels []TunnelAddr
